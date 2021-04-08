@@ -8,10 +8,11 @@
 // • Differentiate type aliases from interfaces
 
 const Exercise2 = () => {
-  // ======== Exercise 2.1 ========
-  // Instructions:
-  // • Create an interface `CartItem` and replace the param's type with it
-  // • Make variantId optional
+
+  // // ======== Exercise 2.1 ========
+  // // Instructions:
+  // // • Create an interface `CartItem` and replace the param's type with it
+  // // • Make variantId optional
 
   interface CartItem {
     id: number; 
@@ -20,39 +21,53 @@ const Exercise2 = () => {
     summary(): String;
   }
 
-  const item = {
+  const addItem = {
     id: 1,
     title: 'Concrete shoes',
-    variantId: 123,
     summary(): string {
-      return `Title ${this.title}`
+      return `Adding "${this.title}" to cart.`
     }
   }
 
   const addToCart = (item: CartItem): void => {
-    console.log('[Exercise 2.1]', `Adding "${item.title}" to cart.`)    
+    console.log('[Exercise 2.1]', item.summary())    
   }
+
+  addToCart(addItem)
+
   // function addToCart(item: { id: number; title: string; variantId: number }) {
   //   console.log('[Exercise 2.1]', `Adding "${item.title}" to cart.`)
   // }
 
-  addToCart(item)
+  // addToCart({ id: 1, title: 'Concrete shoes' })
+
 
   // // ======== Exercise 2.2 ========
   // // Instructions:
   // // • Create and implement an interface on `Person` to ensure it always has accessible
   // //   `name` and `age` member properties.
 
-  // interface Person {
-  //   name: string;
-  //   age: number;
-  // }
-  // const jane = new Person('Jane', 31)
-  // function printPerson(person: {name: string; age: number;}) {
-  //   console.log('[Exercise 2.2]', `${jane.name} is ${jane.age} years old.`)
-  // }
 
-  // printPerson(person);
+  interface Person {
+    name: string;
+    age: number;
+  }
+
+  class Person implements Person {
+    name: string;
+    age: number;
+
+    constructor(_name: string, _age: number) {
+      this.name = _name;
+      this.age = _age;
+    }
+
+  }
+
+  const jane = new Person('Jane', 31)
+
+  console.log('[Exercise 2.2]', `${jane.name} is ${jane.age} years old.`)
+
 
   // class Person {
   //   constructor(public name: string, public age: number) {}
@@ -62,6 +77,7 @@ const Exercise2 = () => {
 
   // console.log('[Exercise 2.2]', `${jane.name} is ${jane.age} years old.`)
 
+
   // // ======== Exercise 2.3 ========
   // // Instructions:
   // // • Create an interface `Coords` that has numeric `latitude` and `longitude` properties.
@@ -70,6 +86,54 @@ const Exercise2 = () => {
   // // • Fix whatever is wrong with `tampa`
 
   // // [do not edit] (pretend this is coming from external `foo.d.ts` lib)
+  interface City {
+    name: string
+  }
+  // [/do not edit]
+
+  interface Coords {
+    latitude: number;
+    longitude: number;
+  }
+
+  // interface coords extends City, Coords {
+  //   coords: Coords;
+  // }
+
+  interface City {
+    coords: Coords;
+  }
+
+  const montreal = {
+    coords: {
+      latitude: 42.332,
+      longitude: -73.324,
+    },
+    name: 'Montréal',
+  }
+
+  const tampa = {
+    coords: {
+      latitude: 27.9478,
+      longitude: -82.4584,
+    },
+    name: 'Tampa',
+  }
+
+  function getCityInfo(city: City) {
+    const coords = `(${city.coords.latitude.toFixed(
+      3
+    )}, ${city.coords.longitude.toFixed(3)})`
+    return `${city.name.toUpperCase()} is located at ${coords}.`
+  }
+
+  console.log(
+    '[Exercise 2.3]',
+    `${getCityInfo(montreal)} \n\n ${getCityInfo(tampa)}`
+  )
+
+  // // [do not edit] (pretend this is coming from external `foo.d.ts` lib)
+
   // interface City {
   //   name: string
   // }
@@ -103,8 +167,28 @@ const Exercise2 = () => {
   //   `${getCityInfo(montreal)} \n\n ${getCityInfo(tampa)}`
   // )
 
+
   // // ======== Exercise 2.4 ========
   // // The purpose of this exercise is simply to illustrate a use of `readonly`
+
+  interface UserSchema {
+    readonly id: number
+    name: string
+  }
+
+  class User implements UserSchema {
+    constructor(public name: string, readonly id: number) {}
+  }
+
+  const user = new User('Dog', 1)
+
+  console.log(user.id) // readable
+
+  user.name = 'Harold' // writable
+  user.id = 5 // not writable
+
+  console.log(`User:`, user)
+
 
   // interface UserSchema {
   //   readonly id: number
@@ -123,6 +207,7 @@ const Exercise2 = () => {
   // user.id = 5 // not writable
 
   // console.log(`User:`, user)
+
 }
 
 Exercise2()
